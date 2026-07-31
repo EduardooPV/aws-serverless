@@ -1,4 +1,29 @@
-# AWS Serverless Brokerage - Simulação de Ambiente Real
+<h1 align="center">AWS Serverless Brokerage</h1>
+
+<p align="center">
+  Sistema financeiro distribuído na stack AWS Serverless usando LocalStack e .NET
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/.NET-9-512BD4?style=flat-square&logo=dotnet&logoColor=white" alt=".NET 9" />
+  <img src="https://img.shields.io/badge/AWS-serverless-232F3E?style=flat-square&logo=amazonaws&logoColor=white" alt="AWS" />
+  <img src="https://img.shields.io/badge/LocalStack-local-4D29B4?style=flat-square&logo=localstack&logoColor=white" alt="LocalStack" />
+  <img src="https://img.shields.io/badge/Terraform-IaC-7B42BC?style=flat-square&logo=terraform&logoColor=white" alt="Terraform" />
+  <img src="https://img.shields.io/badge/DynamoDB-db-4053D6?style=flat-square&logo=amazondynamodb&logoColor=white" alt="DynamoDB" />
+  <img src="https://img.shields.io/badge/Docker-compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose" />
+</p>
+
+<p align="center">
+  <a href="#sobre-o-projeto">Sobre o projeto</a> ·
+  <a href="#arquitetura">Arquitetura</a> ·
+  <a href="#stack">Stack</a> ·
+  <a href="#roadmap">Roadmap</a> ·
+  <a href="#como-rodar">Como rodar</a>
+</p>
+
+---
+
+## Sobre o projeto
 
 Este repositório documenta a **jornada de construção de um sistema financeiro distribuído** usando práticas e padrões de arquitetura utilizados por corretoras reais. O objetivo é dominar a stack AWS Serverless através de implementação prática, simulando cenários reais de:
 
@@ -9,50 +34,44 @@ Este repositório documenta a **jornada de construção de um sistema financeiro
 - **Segurança bancária** (criptografia, secrets, IAM)
 - **Observabilidade** completa (logs, métricas, traces)
 
-### Diagrama
-
-<img width="2221" height="1181" alt="AWS_Serveless (1)" src="https://github.com/user-attachments/assets/4ba5d11d-d5f9-4306-963c-a766ac86e4aa" />
-
 ### LocalStack
 
 LocalStack permite simular **todos os serviços AWS localmente**, sem custos e com iteração rápida.
 
-### Metodologia de Estudo
+### Metodologia de estudo
 
 Este é um **projeto evolutivo** dividido em fases incrementais. Cada fase adiciona complexidade e simula novos desafios reais de produção. O código não é descartável - cada melhoria se soma à anterior, construindo um sistema progressivamente mais robusto.
 
----
-
-## Projeto .NET
+### Projeto .NET
 
 O repositório inclui uma API em .NET para simular o backend financeiro, integrando com DynamoDB e outros serviços AWS. O foco principal segue sendo a arquitetura serverless e o uso do LocalStack.
 
-### Como rodar localmente
+---
 
-1. Instale o [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-2. Execute o script de desenvolvimento que automatiza o LocalStack, aplica o Terraform (se necessário) e inicia a API:
+## Arquitetura
 
-```bash
-./dev/start.sh
-```
+<img width="2221" height="1181" alt="AWS_Serveless (1)" src="https://github.com/user-attachments/assets/4ba5d11d-d5f9-4306-963c-a766ac86e4aa" />
 
-O script realiza automaticamente:
+---
 
-- Sobe o LocalStack via Docker
-- Aplica os recursos do Terraform (se ainda não existirem)
-- Inicia a aplicação `Brokerage.Api` com `dotnet watch run`
+## Stack
 
-A API deverá ficar disponível em http://localhost:5032 (ou na porta mostrada pelo dotnet).
+| Camada          | Tecnologia                          |
+|-----------------|-------------------------------------|
+| Backend         | .NET 9 (`Brokerage.Api`)            |
+| Compute         | AWS Lambda                          |
+| Mensageria      | SQS + SNS (fan-out, DLQ)            |
+| Orquestração    | AWS Step Functions (padrão Saga)    |
+| Banco de dados  | DynamoDB                            |
+| Storage         | S3                                  |
+| IaC             | Terraform                           |
+| Ambiente local  | LocalStack + Docker Compose         |
 
-> **Nota:** Se preferir executar manualmente, você pode subir o LocalStack, aplicar o Terraform e rodar `cd src/Brokerage.Api && dotnet run`.
-
-## Estrutura do Projeto
-
-- **dev**: scripts de desenvolvimento e helpers (ex: `dev/start.sh`)
-- **infra**: definições de infra local com `docker-compose.yml` e a pasta `terraform` com os recursos (SQS, SNS, DynamoDB, S3, etc)
-- **src**: código-fonte .NET
+---
 
 ## Roadmap
+
+Status de cada item: `[x]` concluído · `[ ]` planejado
 
 ### Fase 1: Fundação Básica
 
@@ -95,3 +114,39 @@ A API deverá ficar disponível em http://localhost:5032 (ou na porta mostrada p
   5. **Rollback:** Se falhar no passo 3, devolver o dinheiro do passo 2
 - [x] **Padrão Saga:** Implementar compensação automática em caso de falha
 
+---
+
+## Como rodar
+
+1. Instale o [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+2. Execute o script de desenvolvimento que automatiza o LocalStack, aplica o Terraform (se necessário) e inicia a API:
+
+```bash
+./dev/start.sh
+```
+
+O script realiza automaticamente:
+
+- Sobe o LocalStack via Docker
+- Aplica os recursos do Terraform (se ainda não existirem)
+- Inicia a aplicação `Brokerage.Api` com `dotnet watch run`
+
+A API deverá ficar disponível em http://localhost:5032 (ou na porta mostrada pelo dotnet).
+
+> **Nota:** Se preferir executar manualmente, você pode subir o LocalStack, aplicar o Terraform e rodar `cd src/Brokerage.Api && dotnet run`.
+
+---
+
+## Estrutura do repositório
+
+- **dev**: scripts de desenvolvimento e helpers (ex: `dev/start.sh`)
+- **infra**: definições de infra local com `docker-compose.yml` e a pasta `terraform` com os recursos (SQS, SNS, DynamoDB, S3, etc)
+- **src**: código-fonte .NET
+
+---
+
+<p align="center">
+  Desenvolvido por <strong>Luiz Eduardo Veltroni</strong> ·
+  <a href="https://github.com/EduardooPV">GitHub</a> ·
+  <a href="https://www.linkedin.com/in/luiz-veltroni/">LinkedIn</a>
+</p>
