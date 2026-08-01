@@ -9,9 +9,10 @@
 *tfstate
 *tfstate.*
 .terraform.tfstate.lock.info
+*.zip
 
 # MacOS
-DS_Store
+.DS_Store
 
 # .Net
 bin/
